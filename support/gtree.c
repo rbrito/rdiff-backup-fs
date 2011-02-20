@@ -1,4 +1,5 @@
 #include <fcntl.h>
+#include <assert.h>
 
 #include "gtree.h"
 #include "gutils.h"
@@ -127,6 +128,21 @@ int gtreedel(struct node *tree, const char *path){
 
 };
 
+};
+
+void gtreenlinks(tree_t tree){
+    
+    assert(tree->stats->type == S_IFDIR);
+    
+    int i = 0;
+    int nlink = 2;
+        
+    for (i = 0; i < tree->size; i++)
+        if (tree->children[i]->stats->type == S_IFDIR){
+            gtreenlinks(tree->children[i]);
+            nlink++;
+        }
+    tree->stats->nlink = nlink;
 // private:
 
 struct node * find_node(struct node *root, const char *path){
